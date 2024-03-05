@@ -26,7 +26,7 @@ To install the SMS Microservice, follow these steps:
 
 3. Initialize the Go module:
 
-  ```bash
+   ```bash
    go mod init github.com/Michael-Kyalo/sms_exchange
 
 4. Install dependencies:
