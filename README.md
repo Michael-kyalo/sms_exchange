@@ -37,7 +37,7 @@ To install the SMS Microservice, follow these steps:
 5. Build the project:
 
    ```bash
-  go build -o sms_exchange ./cmd/sms/main.go
+   go build -o sms_exchange ./cmd/sms/main.go
  
 
 ## Usage
