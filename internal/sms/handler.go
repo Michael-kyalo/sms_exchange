@@ -2,6 +2,7 @@ package sms
 
 import (
 	"log"
+	"os"
 	"time"
 )
 
@@ -64,8 +65,16 @@ func (h *Handler) handleMessage(command SendSMSCommand) error {
 	return nil
 }
 
-func (h *Handler) sendSMS(phoneNumber string, smsText string) error {
-	//TODO: send the SMS
+func (h *Handler) sendSMS(phoneNumber, smsText string) error {
+	//initialize the HTTP client with third party url
+	thirdPartyURL := os.Getenv("THIRD_PARTY_URL")
+	httpClient := NewHTTPClient(thirdPartyURL)
+
+	err := httpClient.SendSMS(phoneNumber, smsText)
+
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

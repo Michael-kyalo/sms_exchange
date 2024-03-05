@@ -6,32 +6,19 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/Michael-kyalo/sms_exchange/internal/sms"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 
-	// //initialize logger
-	// logger := log.New(os.Stdout, "[SMS EXCHANGE]", log.LstdFlags)
+	//initialize environment
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 
-	// //initialize sms handler
-	// smsHandler := sms.NewHandler(logger)
-
-	// //start the sms_exchange microservice
-	// err := smsHandler.Start()
-	// if err != nil {
-	// 	logger.Fatalf("Failed to start sms_exchange microservice: %v", err)
-	// }
-
-	// //handle graceful shutdown
-	// sigChan := make(chan os.Signal, 1)
-
-	// signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-	// <-sigChan
-
-	// logger.Println("Shutting down sms_exchange...")
-	// smsHandler.Stop()
-	// logger.Println("sms_exchange stopped")
-
+	//initialize logger
 	logger := log.New(os.Stdout, "[SMS EXCHANGE]", log.LstdFlags)
 
 	// Initialize sms handler
@@ -44,7 +31,7 @@ func main() {
 	// Start the sms_exchange microservice
 	//in a seprate goroutine to avoid blocking the main thread
 	go func() {
-		if err := smsHandler.Start(ctx); err != nil {
+		if err := smsHandler.Start(); err != nil {
 			logger.Fatalf("Failed to start sms_exchange microservice: %v", err)
 		}
 	}()
