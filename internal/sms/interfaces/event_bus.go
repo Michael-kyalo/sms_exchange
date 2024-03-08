@@ -2,7 +2,7 @@ package interfaces
 
 // represents an event bus for publishing events
 type EventBus interface {
-	Logger
+
 	//Start start handles the logic for connecting to the event bus
 	StartBus() error
 	//Stop stops the event bus

@@ -1,54 +1,54 @@
 package main
 
 import (
+	"github.com/Michael-kyalo/sms_exchange/internal/sms/implementations"
+	"github.com/Michael-kyalo/sms_exchange/internal/sms/interfaces"
 	"github.com/joho/godotenv"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-
-	//initialize environment
+	// Initialize environment variables from .env file
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	// //initialize logger
-	// logger := log.New(os.Stdout, "[SMS EXCHANGE]", log.LstdFlags)
+	// Initialize logger
+	logger := &implementations.MockLogger{}
 
-	// //initialize event bus
-	// eventBus := &sms.EventBus{}
-	// // Initialize sms handler
+	// Initialize event bus, message queue, and HTTP client
+	eventBus := &implementations.MockEventBus{
+		Logger: logger,
+	}
+	messageQueue := &implementations.MockMessageQueue{
+		Logger: logger,
+	} // Implement MessageQueue interface
+	httpClient := &implementations.MockHttpClient{} // Implement HTTPClient interface
 
-	// smsHandler := sms.NewHandler(logger, eventBus)
+	// Create a new instance of the HandlerImpl with initialized dependencies
+	handler := implementations.NewHandler(logger, eventBus, messageQueue, httpClient)
 
-	// Create a context for graceful shutdown
-	//ctx, cancel := context.WithCancel(context.Background())
-	//defer cancel()
-
-	// Start the sms_exchange microservice
-	//in a seprate goroutine to avoid blocking the main thread
-	// go func() {
-	// 	if err := smsHandler.Start(); err != nil {
-	// 		logger.Fatalf("Failed to start sms_exchange microservice: %v", err)
-	// 	}
-	// }()
+	// Start the SMS exchange microservice
+	go func() {
+		if err := handler.Start(); err != nil {
+			logger.Error("Failed to start SMS exchange microservice: %v", err)
+		}
+	}()
 
 	// Handle graceful shutdown
-	// sigChan := make(chan os.Signal, 1)
-	// signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
-	// select {
-	// case sig := <-sigChan:
-	// 	logger.Printf("Received signal: %v", sig)
-	// 	cancel() // Cancel context to initiate graceful shutdown
-	// case <-ctx.Done():
-	// 	// Context canceled
-	// }
+	// Wait for a termination signal
+	sig := <-sigChan
+	logger.Info("Received signal: %v", sig)
 
-	// logger.Println("Shutting down sms_exchange...")
-	// if err := smsHandler.Stop(); err != nil {
-	// 	logger.Fatalf("Error while stopping sms_exchange: %v", err)
-	// }
-	// logger.Println("sms_exchange stopped")
-
+	// Stop the SMS exchange microservice
+	if err := handler.Stop(); err != nil {
+		logger.Error("Error while stopping SMS exchange: %v", err)
+	}
+	logger.Info("SMS exchange stopped", "success")
 }

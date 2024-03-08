@@ -3,10 +3,11 @@ package implementations
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Michael-kyalo/sms_exchange/internal/sms/interfaces"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/Michael-kyalo/sms_exchange/internal/sms/interfaces"
 )
 
 type HandlerImpl struct {
@@ -20,6 +21,8 @@ func NewHandler(logger interfaces.Logger, bus interfaces.EventBus, queue interfa
 	return &HandlerImpl{
 		logger: logger,
 		bus:    bus,
+		queue:  queue,
+		client: client,
 	}
 }
 
@@ -40,6 +43,7 @@ func (h *HandlerImpl) Start() error {
 		h.logger.Info("Failed to Recieve message: %v", err)
 		return err
 	}
+	h.logger.Info("Recieved message: %v", command)
 
 	if err := h.HandleMessage(command); err != nil {
 		h.logger.Info("Failed to handle message: %v", err)
@@ -74,7 +78,7 @@ func (h *HandlerImpl) HandleMessage(command *interfaces.SendSMSCommand) error {
 	if err != nil {
 
 		//can additionally store the failed messages in a database
-		h.logger.Info("Failed to send SMS command: %v", err)
+		//h.logger.Info("Failed to send SMS command: %v", err)
 		return err
 	}
 

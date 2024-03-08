@@ -1,7 +1,7 @@
 package interfaces
 
 type HTTPClient interface {
-	Logger
+
 	//Get performs a GET request
 	Get(url string) <-chan *HTTPResponse
 	//Post performs a POST request

@@ -8,7 +8,7 @@ import (
 
 func TestHandler_Start(t *testing.T) {
 	logger := &implementations.MockLogger{}
-	queue := &implementations.MockMessageQueue{}
+	queue := &implementations.MockMessageQueue{Logger: logger}
 	bus := &implementations.MockEventBus{Logger: logger}
 	client := &implementations.MockHttpClient{}
 
@@ -27,5 +27,8 @@ func TestHandler_Start(t *testing.T) {
 
 	if !logger.InfoCalled {
 		t.Errorf("Expected Info method to be called")
+	}
+	if !bus.EventPublished {
+		t.Errorf("Expected EventPublished method to be called")
 	}
 }

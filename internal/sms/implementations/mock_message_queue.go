@@ -4,6 +4,7 @@ import "github.com/Michael-kyalo/sms_exchange/internal/sms/interfaces"
 
 // MockMessageQueue is a mock implementation of the MessageQueue interface
 type MockMessageQueue struct {
+	Logger         interfaces.Logger
 	Started        bool
 	Stopped        bool
 	ReceiveInvoked bool
@@ -30,5 +31,8 @@ func (m *MockMessageQueue) StopMessageQueue() error {
 
 func (m *MockMessageQueue) RecieveCommand() (*interfaces.SendSMSCommand, error) {
 	m.ReceiveInvoked = true
-	return nil, nil
+	return &interfaces.SendSMSCommand{
+		PhoneNumber: "123445",
+		SmsText:     "Hello World",
+	}, nil
 }

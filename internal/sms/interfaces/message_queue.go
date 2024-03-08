@@ -2,7 +2,6 @@ package interfaces
 
 // defines the interface for interacting with a message queue.
 type MessageQueue interface {
-	Logger
 	//Start starts the message queue
 	StartMessageQueue() error
 	//Stop stops the message queue
