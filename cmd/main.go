@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/Michael-kyalo/sms_exchange/internal/sms/implementations"
-	"github.com/Michael-kyalo/sms_exchange/internal/sms/interfaces"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
